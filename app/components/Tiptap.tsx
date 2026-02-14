@@ -11,7 +11,7 @@ import { Color } from '@tiptap/extension-color'
 import { TextStyle } from '@tiptap/extension-text-style'
 
 const Tiptap = () => {
-    const { selectedNote } = useNotes();
+    const { selectedNote, updateNote } = useNotes();
 
     const editor = useEditor({
         extensions: [
@@ -27,6 +27,11 @@ const Tiptap = () => {
             },
         },
         immediatelyRender: false,
+        onUpdate: ({ editor }) => {
+            if (selectedNote) {
+                updateNote(selectedNote.id, { description: editor.getHTML() });
+            }
+        },
     })
 
     useEffect(() => {
@@ -48,7 +53,7 @@ const Tiptap = () => {
     }
 
     return (
-        <div className="flex flex-col gap-2 h-full">
+        <div className="flex flex-col gap-2 h-full border-l border-zinc-200">
             <Toolbar editor={editor} />
             <EditorContent editor={editor} className="flex-1 overflow-y-auto" />
         </div>

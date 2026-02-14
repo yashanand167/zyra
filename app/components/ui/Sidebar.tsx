@@ -24,7 +24,6 @@ export default function Sidebar() {
                                     }`}
                             >
                                 <div className="font-medium text-sm truncate">{note.title}</div>
-                                <div className="text-xs text-zinc-500 truncate">{note.description}</div>
                             </button>
                         ))}
                     </div>

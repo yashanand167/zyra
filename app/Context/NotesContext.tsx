@@ -9,6 +9,8 @@ interface NotesContextType {
     isLoading: boolean;
     fetchNotes: () => Promise<void>;
     addNote: (title: string, description: string) => Promise<void>;
+    updateNote: (id: string, updates: Partial<Note>) => void;
+    saveNote: (id: string) => Promise<void>;
     selectNote: (note: Note) => void;
 }
 
@@ -24,9 +26,13 @@ export function NotesProvider({ children }: { children: ReactNode }) {
             const response = await fetch('/api/notes');
             if (response.ok) {
                 const data = await response.json();
-                setNotes(data);
-                if (!selectedNote && data.length > 0) {
-                    setSelectedNote(data[0]);
+                if (data.length === 0) {
+                    await addNote("Untitled Note", "");
+                } else {
+                    setNotes(data);
+                    if (!selectedNote) {
+                        setSelectedNote(data[0]);
+                    }
                 }
             }
         } catch (error) {
@@ -47,10 +53,39 @@ export function NotesProvider({ children }: { children: ReactNode }) {
             if (response.ok) {
                 const newNote = await response.json();
                 setNotes((prev) => [...prev, newNote]);
-                setSelectedNote(newNote); 
+                setSelectedNote(newNote);
             }
         } catch (error) {
             console.error('Failed to add note:', error);
+        }
+    };
+
+    const updateNote = (id: string, updates: Partial<Note>) => {
+        setNotes((prev) =>
+            prev.map((note) => (note.id === id ? { ...note, ...updates } : note))
+        );
+        if (selectedNote?.id === id) {
+            setSelectedNote((prev) => (prev ? { ...prev, ...updates } : null));
+        }
+    };
+
+    const saveNote = async (id: string) => {
+        const noteToSave = notes.find((n) => n.id === id);
+        if (!noteToSave) return;
+
+        try {
+            const response = await fetch('/api/notes', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(noteToSave),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save note');
+            }
+            console.log("Note saved successfully");
+        } catch (error) {
+            console.error('Error saving note:', error);
         }
     };
 
@@ -58,12 +93,33 @@ export function NotesProvider({ children }: { children: ReactNode }) {
         setSelectedNote(note);
     };
 
+    // Load from localStorage on mount (if API fails or is empty? Or just precedence?)
+    // Actually, request said "before the notes should be in local storage".
+    // So we sync state to localStorage.
     useEffect(() => {
+        if (notes.length > 0) {
+            localStorage.setItem('zyra-notes', JSON.stringify(notes));
+        }
+    }, [notes]);
+
+    // On load, we could try to load from localStorage first for instant load
+    useEffect(() => {
+        const saved = localStorage.getItem('zyra-notes');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (parsed.length > 0) {
+                    setNotes(parsed);
+                }
+            } catch (e) {
+                console.error("Failed to parse local notes", e);
+            }
+        }
         fetchNotes();
     }, []);
 
     return (
-        <NotesContext.Provider value={{ notes, selectedNote, isLoading, fetchNotes, addNote, selectNote }}>
+        <NotesContext.Provider value={{ notes, selectedNote, isLoading, fetchNotes, addNote, updateNote, saveNote, selectNote }}>
             {children}
         </NotesContext.Provider>
     );

@@ -3,13 +3,23 @@
 import { Logo } from "@/public/Logo";
 import { motion } from "motion/react"
 import { useNotes } from "@/app/Context/NotesContext";
-import { Plus } from "lucide-react";
+import { Plus, Save } from "lucide-react";
+import { useState } from "react";
 
 export default function Header() {
-    const { selectedNote, addNote, notes } = useNotes();
+    const { selectedNote, addNote, saveNote, notes } = useNotes();
+    const [isSaving, setIsSaving] = useState(false);
 
     const handleNewNote = async () => {
-        // await addNote("Untitled Note", "Start writing...");
+        await addNote("Untitled Note", "Start writing...");
+    }
+
+    const handleSaveNote = async () => {
+        if (selectedNote) {
+            setIsSaving(true);
+            await saveNote(selectedNote.id);
+            setIsSaving(false);
+        }
     }
 
     return (
@@ -22,15 +32,28 @@ export default function Header() {
                 </span>
             </div>
 
-            <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleNewNote}
-                className="flex flex-row items-center gap-4 px-6 py-3 bg-transparent border border-black text-black hover:bg-gradient-to-r hover:from-black hover:to-zinc-600 hover:text-white hover:border-transparent transition-all text-sm rounded-[14px] ml-auto"
-            >
-                <Plus size={20} />
-                New Note
-            </motion.button>
+            <div className="flex gap-4 ml-auto">
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleSaveNote}
+                    disabled={!selectedNote || isSaving}
+                    className={`flex flex-row items-center gap-2 px-6 py-3 bg-transparent border border-black text-black hover:bg-black hover:text-white transition-all text-sm rounded-[14px] ${(!selectedNote || isSaving) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                    <Save size={20} />
+                    {isSaving ? "Saving..." : "Save"}
+                </motion.button>
+
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleNewNote}
+                    className="flex flex-row items-center gap-2 px-6 py-3 bg-transparent border border-black text-black hover:bg-gradient-to-r hover:from-black hover:to-zinc-600 hover:text-white hover:border-transparent transition-all text-sm rounded-[14px]"
+                >
+                    <Plus size={20} />
+                    New Note
+                </motion.button>
+            </div>
         </header>
     )
 }
