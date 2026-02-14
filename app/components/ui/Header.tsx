@@ -6,10 +6,10 @@ import { useNotes } from "@/app/Context/NotesContext";
 import { Plus } from "lucide-react";
 
 export default function Header() {
-    const { selectedNote, addNote } = useNotes();
+    const { selectedNote, addNote, notes } = useNotes();
 
     const handleNewNote = async () => {
-        await addNote("Untitled Note", "Start writing...");
+        // await addNote("Untitled Note", "Start writing...");
     }
 
     return (
@@ -17,7 +17,9 @@ export default function Header() {
 
             <div className="flex flex-row items-center gap-1 font-medium">
                 <span className="text-zinc-500">My Notes/</span>
-                <span className="text-zinc-700">{selectedNote?.title || "Select a note"}</span>
+                <span className="text-zinc-700">
+                    {notes.length === 0 ? "No notes formed yet" : (selectedNote?.title || "Select a note")}
+                </span>
             </div>
 
             <motion.button

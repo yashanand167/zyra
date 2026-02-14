@@ -1,13 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-export interface Note {
-    id: string;
-    title: string;
-    description: string;
-    createdAt: string;
-}
+import { Note } from '../types/Notes.type';
 
 interface NotesContextType {
     notes: Note[];

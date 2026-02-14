@@ -6,6 +6,7 @@ import {
     Italic,
     Underline
 } from 'lucide-react'
+import TextColor from './TextColor'
 
 type Props = {
     editor: Editor | null
@@ -45,6 +46,8 @@ export function Toolbar({ editor }: Props) {
             >
                 <Underline className="w-4 h-4" />
             </button>
+            <div className="w-[1px] h-6 bg-zinc-200 mx-1"></div>
+            <TextColor editor={editor} />
         </div>
     )
 }
