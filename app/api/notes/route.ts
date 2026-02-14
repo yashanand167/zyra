@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-interface Note {
+export interface Note {
     id: string;
     title: string;
     description: string;
