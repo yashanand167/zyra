@@ -3,7 +3,7 @@
 import { Logo } from "@/public/Logo";
 import { motion } from "motion/react"
 import { useNotes } from "@/app/Context/NotesContext";
-import { Plus, Save } from "lucide-react";
+import { CornerDownLeft, CornerDownRight, CornerUpRight, Plus, Save } from "lucide-react";
 import { useState } from "react";
 
 export default function Header() {
@@ -11,7 +11,7 @@ export default function Header() {
     const [isSaving, setIsSaving] = useState(false);
 
     const handleNewNote = async () => {
-        await addNote("Untitled Note", "Start writing...");
+        await addNote("Untitled Note", "");
     }
 
     const handleSaveNote = async () => {
@@ -22,6 +22,14 @@ export default function Header() {
         }
     }
 
+    const handleBackPress = () => {
+        
+    }
+
+    const handleForwardPress = () => {
+        
+    }
+
     return (
         <header className="flex items-center justify-between px-6 py-4 bg-zinc-50 border-b border-zinc-200">
 
@@ -30,10 +38,19 @@ export default function Header() {
                 <span className="text-zinc-700">
                     {notes.length === 0 ? "No notes formed yet" : (selectedNote?.title || "Select a note")}
                 </span>
+
+                <div className="flex flex-row items-center gap-1 pl-2">
+                    <div className="flex flex-row items-center gap-1 bg-white p-2 rounded-[10px] border border-zinc-200">
+                        <CornerDownLeft style={{ width: "20px", height: "20px" }} onClick={handleBackPress} />
+                    </div>
+                    <div className="flex flex-row items-center gap-1 bg-white p-2 rounded-[10px] border border-zinc-200">
+                        <CornerUpRight style={{ width: "20px", height: "20px" }} onClick={handleForwardPress} />
+                    </div>
+                </div>
             </div>
 
             <div className="flex gap-4 ml-auto">
-                <motion.button
+                {/* <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleSaveNote}
@@ -42,7 +59,7 @@ export default function Header() {
                 >
                     <Save size={20} />
                     {isSaving ? "Saving..." : "Save"}
-                </motion.button>
+                </motion.button> */}
 
                 <motion.button
                     whileHover={{ scale: 1.05 }}

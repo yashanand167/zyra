@@ -4,7 +4,8 @@ import Header from "./components/ui/Header";
 import Sidebar from "./components/ui/Sidebar";
 import Tiptap from "./components/Tiptap";
 import { NotesProvider } from "./Context/NotesContext";
-import { Toolbar } from "./components/Toolbar";
+import { Save } from "lucide-react";
+import { motion } from "motion/react";
 
 export default function Home() {
   return (
@@ -13,7 +14,7 @@ export default function Home() {
         <Sidebar />
         <main className="flex-1 flex flex-col">
           <Header />
-          <div className="max-w-3xl mx-auto h-full">
+          <div className="max-w-3xl w-full mx-auto flex-1 h-full">
             <Tiptap />
           </div>
         </main>
