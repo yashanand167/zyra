@@ -5,7 +5,7 @@ import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import { Toolbar } from './Toolbar'
 import { useNotes } from '../Context/NotesContext'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { Color } from '@tiptap/extension-color'
 import { TextStyle } from '@tiptap/extension-text-style'
@@ -13,13 +13,15 @@ import { TextStyle } from '@tiptap/extension-text-style'
 const Tiptap = () => {
     const { selectedNote, updateNote } = useNotes();
 
+    const extensions = useMemo(() => [
+        StarterKit,
+        Underline,
+        TextStyle,
+        Color,
+    ], [])
+
     const editor = useEditor({
-        extensions: [
-            StarterKit,
-            Underline,
-            TextStyle,
-            Color,
-        ],
+        extensions,
         content: '',
         editorProps: {
             attributes: {

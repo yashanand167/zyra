@@ -69,13 +69,15 @@ export function Toolbar({ editor }: Props) {
                 <TextColor editor={editor} />
             </div>
 
-            <div>
-                
+            <div className=''>
+                <button>
+                    Bullets
+                </button>
             </div>
 
             <div className='flex flex-row items-center gap-3'>
                 <button
-                    className='flex items-center gap-2 px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-200 rounded-xl hover:bg-zinc-50 hover:text-black hover:border-zinc-300 transition-all shadow-sm active:scale-95'
+                    className='flex items-center gap-2 px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-200 rounded-xl hover:bg-zinc-50 hover:text-black hover:border-zinc-300 transition-all active:scale-95'
                 >
                     <Download className="w-4 h-4" />
                     Export PDF
@@ -83,7 +85,7 @@ export function Toolbar({ editor }: Props) {
 
                 <button
                     onClick={handleSave}
-                    disabled={isSaving || !selectedNote}
+                    disabled={isSaving || !selectedNote || selectedNote.description.length === 0}
                     className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-black rounded-xl hover:bg-zinc-800 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
                 >
                     <Save className="w-4 h-4" />
