@@ -12,8 +12,9 @@ import {
 } from 'lucide-react'
 import TextColor from './TextColor'
 
-import { useNotes } from '../Context/NotesContext'
+import { useNotes } from '../../app/Context/NotesContext'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 type Props = {
     editor: Editor | null
@@ -32,13 +33,22 @@ export function Toolbar({ editor }: Props) {
             setIsSaving(true);
             await saveNote(selectedNote.id);
             setIsSaving(false);
+            return true;
         }
+        return false;
     }
 
     const handleExportPDF = async () => {
-        if (!handleSave()) {
-
+        if (selectedNote?.description.length === 0) {
+            toast.error("You have no content to export ", {
+                className: "border border-red-500 bg-red-50 text-red-700",
+            });
+            return;
         }
+
+        await handleSave();
+
+        //export as PDF functionality
     }
 
     return (
@@ -100,6 +110,7 @@ export function Toolbar({ editor }: Props) {
             <div className='flex flex-row items-center gap-3 ml-auto'>
                 <button
                     className='flex items-center gap-2 px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-200 rounded-xl hover:bg-zinc-50 hover:text-black hover:border-zinc-300 transition-all active:scale-95'
+                    onClick={handleExportPDF}
                 >
                     <Download className="w-4 h-4" />
                     Export PDF

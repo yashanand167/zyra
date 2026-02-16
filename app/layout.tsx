@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Roboto_Flex } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const robotoFlex = Roboto_Flex({
   variable: "--font-roboto-flex",
@@ -23,6 +24,7 @@ export default function RootLayout({
         className={`${robotoFlex.variable} antialiased`}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );
