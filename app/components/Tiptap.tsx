@@ -55,9 +55,12 @@ const Tiptap = () => {
     }
 
     return (
-        <div className="flex flex-col gap-2 h-full ">
+        <div className="flex flex-col gap-4 h-full ">
             <Toolbar editor={editor} />
             <div className="flex-1 overflow-y-auto bg-white rounded-[20px]">
+                <div className='border-b border-zinc-200'>
+                    <h1 className="text-xl p-5">{selectedNote.title}</h1>
+                </div>
                 <EditorContent editor={editor} className="flex-1 overflow-y-auto bg-white rounded-[20px]" />
             </div>
         </div>

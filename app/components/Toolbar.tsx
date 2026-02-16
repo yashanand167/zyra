@@ -6,7 +6,9 @@ import {
     Italic,
     Underline,
     Download,
-    Save
+    Save,
+    Logs,
+    Heading1
 } from 'lucide-react'
 import TextColor from './TextColor'
 
@@ -33,9 +35,15 @@ export function Toolbar({ editor }: Props) {
         }
     }
 
+    const handleExportPDF = async () => {
+        if (!handleSave()) {
+
+        }
+    }
+
     return (
         <div className="flex items-center justify-between w-full mt-4 mb-3">
-            <div className="flex items-center gap-1 border border-zinc-200 bg-white rounded-xl p-1 w-fit">
+            <div className="flex items-center gap-1 border border-zinc-200 bg-white rounded-xl p-1 w-fit mr-auto">
                 <button
                     onClick={() => editor.chain().focus().toggleBold().run()}
                     disabled={!editor.can().chain().focus().toggleBold().run()}
@@ -69,13 +77,27 @@ export function Toolbar({ editor }: Props) {
                 <TextColor editor={editor} />
             </div>
 
-            <div className=''>
-                <button>
-                    Bullets
-                </button>
-            </div>
+            {/* <div className='flex flex-row items-center gap-1'>
+                <div className='border border-zinc-200 p-2 rounded-xl'>
+                    <button
+                        className="flex flex-col items-center gap-2 text-sm font-medium text-zinc-700 hover:text-black transition-colors"
+                    >
+                        <Logs className="w-4 h-4" />
+                        Bullets
+                    </button>
+                </div>
 
-            <div className='flex flex-row items-center gap-3'>
+                <div className='border border-zinc-200 p-2 rounded-xl'>
+                    <button
+                        className="flex flex-col items-center gap-2 text-sm font-medium text-zinc-700 hover:text-black transition-colors"
+                    >
+                        <Heading1 className="w-4 h-4" />
+                        Heading 1
+                    </button>
+                </div>
+            </div> */}
+
+            <div className='flex flex-row items-center gap-3 ml-auto'>
                 <button
                     className='flex items-center gap-2 px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-200 rounded-xl hover:bg-zinc-50 hover:text-black hover:border-zinc-300 transition-all active:scale-95'
                 >
@@ -85,7 +107,7 @@ export function Toolbar({ editor }: Props) {
 
                 <button
                     onClick={handleSave}
-                    disabled={isSaving || !selectedNote || selectedNote.description.length === 0}
+                    disabled={isSaving || !selectedNote || editor.isEmpty}
                     className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-black rounded-xl hover:bg-zinc-800 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
                 >
                     <Save className="w-4 h-4" />
