@@ -15,7 +15,7 @@ export default function Home() {
         <div className="bg-white p-6 rounded-2xl shadow-xl max-w-sm w-full mx-4 text-center">
           <h2 className="text-xl font-medium mb-2">Desktop Only</h2>
           <p className="text-zinc-600">
-            This application is optimized for desktop usage. Please open it on a larger screen.
+            I was too lazy to make it responsive. Hehe
           </p>
         </div>
       </div>

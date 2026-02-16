@@ -7,7 +7,7 @@ import { CornerDownLeft, CornerDownRight, CornerUpRight, Plus, Save } from "luci
 import { useState } from "react";
 
 export default function Header() {
-    const { selectedNote, addNote, saveNote, notes } = useNotes();
+    const { selectedNote, addNote, saveNote, notes, selectNote } = useNotes();
     const [isSaving, setIsSaving] = useState(false);
 
     const handleNewNote = async () => {
@@ -23,11 +23,15 @@ export default function Header() {
     }
 
     const handleBackPress = () => {
-        
+        if (notes && notes.length > 0) {
+            selectNote(notes[notes.length - 1]);
+        }
     }
 
     const handleForwardPress = () => {
-        
+        if (notes && notes.length > 0) {
+            selectNote(notes[0]);
+        }
     }
 
     return (
@@ -40,12 +44,20 @@ export default function Header() {
                 </span>
 
                 <div className="flex flex-row items-center gap-1 pl-2">
-                    <div className="flex flex-row items-center gap-1 bg-white p-2 rounded-[10px] border border-zinc-200">
-                        <CornerDownLeft style={{ width: "20px", height: "20px" }} onClick={handleBackPress} />
-                    </div>
-                    <div className="flex flex-row items-center gap-1 bg-white p-2 rounded-[10px] border border-zinc-200">
-                        <CornerUpRight style={{ width: "20px", height: "20px" }} onClick={handleForwardPress} />
-                    </div>
+                    <button
+                        className="flex flex-row items-center gap-1 bg-white p-2 rounded-[10px] border border-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gradient-to-br hover:from-black hover:to-zinc-700 hover:text-white hover:scale-110 active:scale-95 transition-all shadow-sm"
+                        disabled={notes.length < 2}
+                        onClick={handleBackPress}
+                    >
+                        <CornerDownLeft style={{ width: "20px", height: "20px" }} />
+                    </button>
+                    <button
+                        className="flex flex-row items-center gap-1 bg-white p-2 rounded-[10px] border border-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gradient-to-br hover:from-black hover:to-zinc-700 hover:text-white hover:scale-110 active:scale-95 transition-all shadow-sm"
+                        disabled={notes.length < 2}
+                        onClick={handleForwardPress}
+                    >
+                        <CornerUpRight style={{ width: "20px", height: "20px" }} />
+                    </button>
                 </div>
             </div>
 

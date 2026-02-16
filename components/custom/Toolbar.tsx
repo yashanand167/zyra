@@ -39,7 +39,7 @@ export function Toolbar({ editor }: Props) {
     }
 
     const handleExportPDF = async () => {
-        if (selectedNote?.description.length === 0) {
+        if (selectedNote?.description.trim().length === 0) {
             toast.error("You have no content to export ", {
                 className: "border border-red-500 bg-red-50 text-red-700",
             });

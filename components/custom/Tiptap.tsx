@@ -9,6 +9,7 @@ import { useEffect, useMemo } from 'react'
 
 import { Color } from '@tiptap/extension-color'
 import { TextStyle } from '@tiptap/extension-text-style'
+import { BulletList } from '@tiptap/extension-list'
 
 const Tiptap = () => {
     const { selectedNote, updateNote } = useNotes();
@@ -18,6 +19,7 @@ const Tiptap = () => {
         Underline,
         TextStyle,
         Color,
+        BulletList,
     ], [])
 
     const editor = useEditor({
@@ -28,6 +30,7 @@ const Tiptap = () => {
                 class: 'prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl m-5 focus:outline-none',
             },
         },
+
         immediatelyRender: false,
         onUpdate: ({ editor }) => {
             if (selectedNote) {

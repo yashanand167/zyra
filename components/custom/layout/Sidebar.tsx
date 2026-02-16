@@ -6,6 +6,10 @@ import { EllipsisVertical, Trash } from "lucide-react";
 export default function Sidebar() {
     const { notes, selectedNote, selectNote, isLoading } = useNotes();
 
+    const handleDelete = (id: string) => {
+
+    }
+
     return (
         <aside className="w-64 bg-zinc-50 border-r border-zinc-200 h-screen overflow-y-auto">
             <div className="p-4">
@@ -22,9 +26,10 @@ export default function Sidebar() {
                         {notes.map((note) => (
                             <div
                                 key={note.id}
+                                onClick={() => selectNote(note)}
                                 className={`flex items-center justify-between text-left p-3 rounded-lg transition-all ${selectedNote?.id === note.id
                                     ? "bg-gradient-to-r from-black to-zinc-700 text-white "
-                                    : "hover:bg-black hover:text-white border border-zinc-200"
+                                    : "hover:bg-black hover:text-white border border-zinc-400"
                                     }`}>
                                 <button
                                     className="flex-1 overflow-hidden text-left"
@@ -35,6 +40,7 @@ export default function Sidebar() {
 
                                 <button
                                     className="ml-2 p-1 rounded-lg hover:bg-red-500 hover:text-white transition-all"
+                                    onClick={() => handleDelete(note.id)}
                                 >
                                     <Trash width={16} height={16}
                                         className={`${selectedNote?.id === note.id ? "text-red-500 hover:text-white" : "text-zinc-500 hover:text-white"}`}
