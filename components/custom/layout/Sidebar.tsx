@@ -2,12 +2,26 @@
 
 import { useNotes } from "@/Context/NotesContext";
 import { EllipsisVertical, Trash } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 
 export default function Sidebar() {
     const { notes, selectedNote, selectNote, isLoading, deleteAllNotes } = useNotes();
     const [showOptions, setShowOptions] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setShowOptions(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+    }, []);
 
     const handleDelete = (id: string) => {
 
@@ -16,7 +30,7 @@ export default function Sidebar() {
     return (
         <aside className="w-64 bg-zinc-50 border-r border-zinc-200 h-screen overflow-y-auto">
             <div className="p-4">
-                <div className="flex items-center justify-between mb-4 relative">
+                <div className="flex items-center justify-between mb-4 relative" ref={dropdownRef}>
                     <h2 className="text-lg font-medium">Notes</h2>
                     <button onClick={() => setShowOptions(!showOptions)} className="p-1 hover:bg-zinc-200 rounded-md transition-colors">
                         <EllipsisVertical width={20} height={20} className="text-zinc-500" />
@@ -38,7 +52,8 @@ export default function Sidebar() {
                                         }
                                         setShowOptions(false);
                                     }}
-                                    className="w-full text-left px-3 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors flex items-center gap-2"
+                                    disabled={notes.length === 0}
+                                    className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2 ${notes.length === 0 ? "text-zinc-300 cursor-not-allowed" : "text-red-500 hover:bg-red-50"}`}
                                 >
                                     <Trash width={14} height={14} />
                                     Delete All
