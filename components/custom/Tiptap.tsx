@@ -4,7 +4,7 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import { Toolbar } from './Toolbar'
-import { useNotes } from '../../app/Context/NotesContext'
+import { useNotes } from '../../Context/NotesContext'
 import { useEffect, useMemo, useRef } from 'react'
 
 import { Color } from '@tiptap/extension-color'

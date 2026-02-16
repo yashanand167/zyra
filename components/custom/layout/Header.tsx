@@ -2,7 +2,7 @@
 
 import { Logo } from "@/public/Logo";
 import { motion } from "motion/react"
-import { useNotes } from "@/app/Context/NotesContext";
+import { useNotes } from "@/Context/NotesContext";
 import { CornerDownLeft, CornerDownRight, CornerUpRight, Plus, Save } from "lucide-react";
 import { useState } from "react";
 

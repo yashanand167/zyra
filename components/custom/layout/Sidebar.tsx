@@ -1,6 +1,6 @@
 'use client'
 
-import { useNotes } from "@/app/Context/NotesContext";
+import { useNotes } from "@/Context/NotesContext";
 import { EllipsisVertical, Trash } from "lucide-react";
 
 export default function Sidebar() {

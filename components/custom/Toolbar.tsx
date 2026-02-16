@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 import TextColor from './TextColor'
 
-import { useNotes } from '../../app/Context/NotesContext'
+import { useNotes } from '../../Context/NotesContext'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
