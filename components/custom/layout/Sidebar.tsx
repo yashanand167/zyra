@@ -6,7 +6,7 @@ import { useRef, useState, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 
 export default function Sidebar() {
-    const { notes, selectedNote, selectNote, isLoading, deleteAllNotes } = useNotes();
+    const { notes, selectedNote, selectNote, isLoading, deleteAllNotes, deleteNote } = useNotes();
     const [showOptions, setShowOptions] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -23,8 +23,8 @@ export default function Sidebar() {
         }
     }, []);
 
-    const handleDelete = (id: string) => {
-
+    const handleDelete = async (id: string) => {
+        await deleteNote(id);
     }
 
     return (
@@ -52,8 +52,8 @@ export default function Sidebar() {
                                         }
                                         setShowOptions(false);
                                     }}
-                                    disabled={notes.length === 0}
-                                    className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2 ${notes.length === 0 ? "text-zinc-300 cursor-not-allowed" : "text-red-500 hover:bg-red-50"}`}
+                                    disabled={notes.length < 2}
+                                    className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2 ${notes.length < 2 ? "text-zinc-300 cursor-not-allowed" : "text-red-500 hover:bg-red-50"}`}
                                 >
                                     <Trash width={14} height={14} />
                                     Delete All

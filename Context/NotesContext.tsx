@@ -12,6 +12,7 @@ interface NotesContextType {
     updateNote: (id: string, updates: Partial<Note>) => void;
     saveNote: (id: string) => Promise<void>;
     deleteAllNotes: () => Promise<void>;
+    deleteNote: (id: string) => Promise<void>;
     selectNote: (note: Note) => void;
 }
 
@@ -58,6 +59,25 @@ export function NotesProvider({ children }: { children: ReactNode }) {
             }
         } catch (error) {
             console.error('Failed to add note:', error);
+        }
+    };
+
+    const deleteNote = async (id: string) => {
+        try {
+            const response = await fetch('/api/notes', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id }),
+            });
+
+            if (response.ok) {
+                setNotes((prev) => prev.filter((note) => note.id !== id));
+                if (selectedNote?.id === id) {
+                    setSelectedNote(null);
+                }
+            }
+        } catch (error) {
+            console.error('Failed to delete note:', error);
         }
     };
 
@@ -134,7 +154,7 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <NotesContext.Provider value={{ notes, selectedNote, isLoading, fetchNotes, addNote, updateNote, saveNote, deleteAllNotes, selectNote }}>
+        <NotesContext.Provider value={{ notes, selectedNote, isLoading, fetchNotes, deleteNote, addNote, updateNote, saveNote, deleteAllNotes, selectNote }}>
             {children}
         </NotesContext.Provider>
     );
