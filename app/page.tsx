@@ -4,7 +4,7 @@ import Header from "../components/custom/layout/Header";
 import Sidebar from "../components/custom/layout/Sidebar";
 import Tiptap from "../components/custom/Tiptap";
 import { NotesProvider } from "./Context/NotesContext";
-import useMobile from "./hooks/useMobile";
+import useMobile from "../hooks/useMobile";
 
 export default function Home() {
   const isMobile = useMobile();
