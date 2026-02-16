@@ -5,7 +5,7 @@ import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import { Toolbar } from './Toolbar'
 import { useNotes } from '../../app/Context/NotesContext'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 import { Color } from '@tiptap/extension-color'
 import { TextStyle } from '@tiptap/extension-text-style'
@@ -13,6 +13,11 @@ import { BulletList } from '@tiptap/extension-list'
 
 const Tiptap = () => {
     const { selectedNote, updateNote } = useNotes();
+    const selectedNoteRef = useRef(selectedNote);
+
+    useEffect(() => {
+        selectedNoteRef.current = selectedNote;
+    }, [selectedNote]);
 
     const extensions = useMemo(() => [
         StarterKit,
@@ -33,11 +38,11 @@ const Tiptap = () => {
 
         immediatelyRender: false,
         onUpdate: ({ editor }) => {
-            if (selectedNote) {
-                updateNote(selectedNote.id, { description: editor.getHTML() });
+            if (selectedNoteRef.current) {
+                updateNote(selectedNoteRef.current.id, { description: editor.getHTML() });
             }
         },
-    })
+    }, [])
 
     useEffect(() => {
         if (editor && selectedNote) {

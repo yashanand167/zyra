@@ -83,7 +83,6 @@ export function NotesProvider({ children }: { children: ReactNode }) {
             if (!response.ok) {
                 throw new Error('Failed to save note');
             }
-            console.log("Note saved successfully");
         } catch (error) {
             console.error('Error saving note:', error);
         }
