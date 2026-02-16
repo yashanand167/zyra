@@ -11,6 +11,7 @@ interface NotesContextType {
     addNote: (title: string, description: string) => Promise<void>;
     updateNote: (id: string, updates: Partial<Note>) => void;
     saveNote: (id: string) => Promise<void>;
+    deleteAllNotes: () => Promise<void>;
     selectNote: (note: Note) => void;
 }
 
@@ -88,6 +89,21 @@ export function NotesProvider({ children }: { children: ReactNode }) {
         }
     };
 
+    const deleteAllNotes = async () => {
+        try {
+            const response = await fetch('/api/notes?deleteAll=true', {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                setNotes([]);
+                setSelectedNote(null);
+            }
+        } catch (error) {
+            console.error('Failed to delete all notes:', error);
+        }
+    };
+
     const selectNote = (note: Note) => {
         setSelectedNote(note);
     };
@@ -118,7 +134,7 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <NotesContext.Provider value={{ notes, selectedNote, isLoading, fetchNotes, addNote, updateNote, saveNote, selectNote }}>
+        <NotesContext.Provider value={{ notes, selectedNote, isLoading, fetchNotes, addNote, updateNote, saveNote, deleteAllNotes, selectNote }}>
             {children}
         </NotesContext.Provider>
     );

@@ -74,6 +74,14 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
     try {
+        const url = new URL(request.url);
+        const deleteAll = url.searchParams.get('deleteAll');
+
+        if (deleteAll === 'true') {
+            notes = [];
+            return NextResponse.json({ success: true });
+        }
+
         const body = await request.json();
         const { id } = body;
 
