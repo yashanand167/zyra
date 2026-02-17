@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import { Note } from '../types/Notes.type';
 
 interface NotesContextType {
@@ -23,28 +23,11 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const fetchNotes = async () => {
-        try {
-            const response = await fetch('/api/notes');
-            if (response.ok) {
-                const data = await response.json();
-                if (data.length === 0) {
-                    await addNote("Untitled Note", "");
-                } else {
-                    setNotes(data);
-                    if (!selectedNote) {
-                        setSelectedNote(data[0]);
-                    }
-                }
-            }
-        } catch (error) {
-            console.error('Failed to fetch notes:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const selectNote = useCallback((note: Note) => {
+        setSelectedNote(note);
+    }, []);
 
-    const addNote = async (title: string, description: string) => {
+    const addNote = useCallback(async (title: string, description: string) => {
         try {
             const response = await fetch('/api/notes', {
                 method: 'POST',
@@ -60,9 +43,28 @@ export function NotesProvider({ children }: { children: ReactNode }) {
         } catch (error) {
             console.error('Failed to add note:', error);
         }
-    };
+    }, []);
 
-    const deleteNote = async (id: string) => {
+    const fetchNotes = useCallback(async () => {
+        try {
+            const response = await fetch('/api/notes');
+            if (response.ok) {
+                const data = await response.json();
+                if (data.length === 0) {
+                    await addNote("Untitled Note", "");
+                } else {
+                    setNotes(data);
+                    setSelectedNote((prev) => prev ? prev : data[0]);
+                }
+            }
+        } catch (error) {
+            console.error('Failed to fetch notes:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [addNote]);
+
+    const deleteNote = useCallback(async (id: string) => {
         try {
             const response = await fetch('/api/notes', {
                 method: 'DELETE',
@@ -72,25 +74,21 @@ export function NotesProvider({ children }: { children: ReactNode }) {
 
             if (response.ok) {
                 setNotes((prev) => prev.filter((note) => note.id !== id));
-                if (selectedNote?.id === id) {
-                    setSelectedNote(null);
-                }
+                setSelectedNote((prev) => (prev?.id === id ? null : prev));
             }
         } catch (error) {
             console.error('Failed to delete note:', error);
         }
-    };
+    }, []);
 
-    const updateNote = (id: string, updates: Partial<Note>) => {
+    const updateNote = useCallback((id: string, updates: Partial<Note>) => {
         setNotes((prev) =>
             prev.map((note) => (note.id === id ? { ...note, ...updates } : note))
         );
-        if (selectedNote?.id === id) {
-            setSelectedNote((prev) => (prev ? { ...prev, ...updates } : null));
-        }
-    };
+        setSelectedNote((prev) => (prev?.id === id ? { ...prev, ...updates } : prev));
+    }, []);
 
-    const saveNote = async (id: string) => {
+    const saveNote = useCallback(async (id: string) => {
         const noteToSave = notes.find((n) => n.id === id);
         if (!noteToSave) return;
 
@@ -107,9 +105,9 @@ export function NotesProvider({ children }: { children: ReactNode }) {
         } catch (error) {
             console.error('Error saving note:', error);
         }
-    };
+    }, [notes]);
 
-    const deleteAllNotes = async () => {
+    const deleteAllNotes = useCallback(async () => {
         try {
             const response = await fetch('/api/notes?deleteAll=true', {
                 method: 'DELETE',
@@ -122,11 +120,7 @@ export function NotesProvider({ children }: { children: ReactNode }) {
         } catch (error) {
             console.error('Failed to delete all notes:', error);
         }
-    };
-
-    const selectNote = (note: Note) => {
-        setSelectedNote(note);
-    };
+    }, []);
 
     // Load from localStorage on mount (if API fails or is empty? Or just precedence?)
     // Actually, request said "before the notes should be in local storage".
@@ -151,10 +145,23 @@ export function NotesProvider({ children }: { children: ReactNode }) {
             }
         }
         fetchNotes();
-    }, []);
+    }, [fetchNotes]);
+
+    const value = useMemo(() => ({
+        notes,
+        selectedNote,
+        isLoading,
+        fetchNotes,
+        addNote,
+        updateNote,
+        saveNote,
+        deleteAllNotes,
+        deleteNote,
+        selectNote
+    }), [notes, selectedNote, isLoading, fetchNotes, addNote, updateNote, saveNote, deleteAllNotes, deleteNote, selectNote]);
 
     return (
-        <NotesContext.Provider value={{ notes, selectedNote, isLoading, fetchNotes, deleteNote, addNote, updateNote, saveNote, deleteAllNotes, selectNote }}>
+        <NotesContext.Provider value={value}>
             {children}
         </NotesContext.Provider>
     );

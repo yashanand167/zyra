@@ -74,7 +74,7 @@ export default function Sidebar() {
                                 onClick={() => selectNote(note)}
                                 className={`flex items-center justify-between text-left p-3 rounded-lg transition-all ${selectedNote?.id === note.id
                                     ? "bg-gradient-to-r from-black to-zinc-700 text-white "
-                                    : "hover:bg-black hover:text-white border border-zinc-400"
+                                    : "hover:bg-black hover:text-white border border-zinc-400 bg-white"
                                     }`}>
                                 <button
                                     className="flex-1 overflow-hidden text-left"
