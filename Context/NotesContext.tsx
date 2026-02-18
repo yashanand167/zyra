@@ -10,6 +10,7 @@ interface NotesContextType {
     fetchNotes: () => Promise<void>;
     addNote: (title: string, description: string) => Promise<void>;
     updateNote: (id: string, updates: Partial<Note>) => void;
+    updateTitle: (id: string, title: string) => void;
     saveNote: (id: string) => Promise<void>;
     deleteAllNotes: () => Promise<void>;
     deleteNote: (id: string) => Promise<void>;
@@ -107,6 +108,10 @@ export function NotesProvider({ children }: { children: ReactNode }) {
         }
     }, [notes]);
 
+    const updateTitle = useCallback((id: string, title: string) => {
+        updateNote(id, { title });
+    }, [updateNote]);
+
     const deleteAllNotes = useCallback(async () => {
         try {
             const response = await fetch('/api/notes?deleteAll=true', {
@@ -154,6 +159,7 @@ export function NotesProvider({ children }: { children: ReactNode }) {
         fetchNotes,
         addNote,
         updateNote,
+        updateTitle,
         saveNote,
         deleteAllNotes,
         deleteNote,

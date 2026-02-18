@@ -4,10 +4,20 @@ import { Logo } from "@/public/Logo";
 import { motion } from "motion/react"
 import { useNotes } from "@/Context/NotesContext";
 import { CornerDownLeft, CornerDownRight, CornerUpRight, Plus, Save } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Header() {
-    const { selectedNote, addNote, notes, selectNote } = useNotes();
+    const { selectedNote, addNote, notes, selectNote, updateNote, saveNote } = useNotes();
+    const [isEditing, setIsEditing] = useState(false);
+    const [title, setTitle] = useState("");
+
+    useEffect(() => {
+        if (selectedNote) {
+            setTitle(selectedNote.title);
+        } else {
+            setTitle(""); // Clear title if no note is selected
+        }
+    }, [selectedNote]);
 
     const handleNewNote = async () => {
         await addNote("Untitled Note", "");
@@ -27,14 +37,61 @@ export default function Header() {
         }
     }
 
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newTitle = e.target.value;
+        setTitle(newTitle);
+        if (selectedNote) {
+            updateNote(selectedNote.id, { title: newTitle });
+        }
+    };
+
+    const handleTitleBlur = () => {
+        setIsEditing(false);
+        if (selectedNote) {
+            saveNote(selectedNote.id);
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            e.currentTarget.blur();
+        }
+    };
+
+    const handleTitleClick = () => {
+        if (selectedNote) { // Only allow editing if a note is selected
+            setIsEditing(true);
+        }
+    };
+
     return (
         <header className="flex items-center justify-between px-6 py-4 bg-zinc-50 border-b border-zinc-200">
 
-            <div className="flex flex-row items-center gap-1 font-medium">
-                <span className="text-zinc-500">My Notes/</span>
-                <span className="text-zinc-700">
-                    {notes.length === 0 ? "No notes formed yet" : (selectedNote?.title || "Select a note")}
-                </span>
+            <div className="flex flex-row items-center gap-1 font-medium w-full max-w-xl">
+                <span className="text-zinc-500 whitespace-nowrap">My Notes/</span>
+                {notes.length === 0 ? (
+                    <span className="text-zinc-700">No notes formed yet</span>
+                ) : (
+                    isEditing ? (
+                        <input
+                            type="text"
+                            value={title}
+                            onChange={handleTitleChange}
+                            onBlur={handleTitleBlur}
+                            onKeyDown={handleKeyDown}
+                            autoFocus
+                            className="text-zinc-700 bg-transparent border-none outline-none font-medium w-full"
+                            placeholder="Untitled Note"
+                        />
+                    ) : (
+                        <span
+                            onClick={handleTitleClick}
+                            className="text-zinc-700 cursor-pointer hover:bg-zinc-200 rounded px-1 -ml-1 transition-colors truncate"
+                        >
+                            {title || "Untitled Note"}
+                        </span>
+                    )
+                )}
 
                 <div className="flex flex-row items-center gap-1 pl-2">
                     <button

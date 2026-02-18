@@ -4,9 +4,10 @@ import { useNotes } from "@/Context/NotesContext";
 import { EllipsisVertical, Trash } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { Note } from "@/types/Notes.type";
 
 export default function Sidebar() {
-    const { notes, selectedNote, selectNote, isLoading, deleteAllNotes, deleteNote } = useNotes();
+    const { notes, selectedNote, selectNote, isLoading, deleteAllNotes, deleteNote, updateTitle, saveNote } = useNotes();
     const [showOptions, setShowOptions] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -26,6 +27,33 @@ export default function Sidebar() {
     const handleDelete = async (id: string) => {
         await deleteNote(id);
     }
+
+    const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+    const [editTitle, setEditTitle] = useState("");
+
+    const handleStartEditing = (e: React.MouseEvent, note: Note) => {
+        e.stopPropagation();
+        setEditingNoteId(note.id);
+        setEditTitle(note.title);
+    };
+
+    const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEditTitle(e.target.value);
+    };
+
+    const handleEditBlur = async (id: string) => {
+        if (editingNoteId === id) {
+            updateTitle(id, editTitle);
+            await saveNote(id);
+            setEditingNoteId(null);
+        }
+    };
+
+    const handleEditKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>, id: string) => {
+        if (e.key === "Enter") {
+            e.currentTarget.blur();
+        }
+    };
 
     return (
         <aside className="w-64 bg-zinc-50 border-r border-zinc-200 h-screen overflow-y-auto">
@@ -76,12 +104,25 @@ export default function Sidebar() {
                                     ? "bg-gradient-to-r from-black to-zinc-700 text-white "
                                     : "hover:bg-black hover:text-white border border-zinc-400 bg-white"
                                     }`}>
-                                <button
-                                    className="flex-1 overflow-hidden text-left"
-                                    onClick={() => selectNote(note)}
-                                >
-                                    <div className="font-medium text-sm truncate">{note.title}</div>
-                                </button>
+                                {editingNoteId === note.id ? (
+                                    <input
+                                        value={editTitle}
+                                        onChange={handleEditChange}
+                                        onBlur={() => handleEditBlur(note.id)}
+                                        onKeyDown={(e) => handleEditKeyDown(e, note.id)}
+                                        autoFocus
+                                        className="w-full bg-transparent outline-none border-b border-white text-sm font-medium p-0 flex-1 ml-1"
+                                        onClick={(e) => e.stopPropagation()}
+                                    />
+                                ) : (
+                                    <button
+                                        className="flex-1 overflow-hidden text-left"
+                                        onClick={() => selectNote(note)}
+                                        onDoubleClick={(e) => handleStartEditing(e, note)}
+                                    >
+                                        <div className="font-medium text-sm truncate">{note.title || "Untitled Note"}</div>
+                                    </button>
+                                )}
 
                                 <button
                                     className="ml-2 p-1 rounded-lg hover:bg-red-500 hover:text-white transition-all"
