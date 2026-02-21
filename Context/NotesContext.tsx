@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo, useRef } from 'react';
 import { Note } from '../types/Notes.type';
 
 interface NotesContextType {
@@ -21,8 +21,13 @@ const NotesContext = createContext<NotesContextType | undefined>(undefined);
 
 export function NotesProvider({ children }: { children: ReactNode }) {
     const [notes, setNotes] = useState<Note[]>([]);
+    const notesRef = useRef<Note[]>([]);
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        notesRef.current = notes;
+    }, [notes]);
 
     const selectNote = useCallback((note: Note) => {
         setSelectedNote(note);
@@ -83,14 +88,16 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const updateNote = useCallback((id: string, updates: Partial<Note>) => {
-        setNotes((prev) =>
-            prev.map((note) => (note.id === id ? { ...note, ...updates } : note))
-        );
+        setNotes((prev) => {
+            const next = prev.map((note) => (note.id === id ? { ...note, ...updates } : note));
+            notesRef.current = next; // eagerly update ref for saveNote
+            return next;
+        });
         setSelectedNote((prev) => (prev?.id === id ? { ...prev, ...updates } : prev));
     }, []);
 
     const saveNote = useCallback(async (id: string) => {
-        const noteToSave = notes.find((n) => n.id === id);
+        const noteToSave = notesRef.current.find((n) => n.id === id);
         if (!noteToSave) return;
 
         try {
@@ -106,7 +113,7 @@ export function NotesProvider({ children }: { children: ReactNode }) {
         } catch (error) {
             console.error('Error saving note:', error);
         }
-    }, [notes]);
+    }, []);
 
     const updateTitle = useCallback((id: string, title: string) => {
         updateNote(id, { title });
@@ -127,9 +134,6 @@ export function NotesProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
-    // Load from localStorage on mount (if API fails or is empty? Or just precedence?)
-    // Actually, request said "before the notes should be in local storage".
-    // So we sync state to localStorage.
     useEffect(() => {
         if (notes.length > 0) {
             localStorage.setItem('zyra-notes', JSON.stringify(notes));

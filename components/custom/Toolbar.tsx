@@ -32,6 +32,9 @@ export function Toolbar({ editor }: Props) {
         if (selectedNote) {
             setIsSaving(true);
             await saveNote(selectedNote.id);
+            toast.success("Note saved successfully", {
+                className: "border border-green-500 bg-green-50 text-green-700",
+            });
             setIsSaving(false);
             return true;
         }
@@ -117,6 +120,7 @@ export function Toolbar({ editor }: Props) {
                 </button>
 
                 <button
+                    onClick={handleSave}
                     disabled={isSaving || !selectedNote || editor.isEmpty}
                     className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-black rounded-xl hover:bg-zinc-800 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
                 >

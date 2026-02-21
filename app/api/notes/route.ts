@@ -51,10 +51,14 @@ export async function PUT(request: Request) {
         const noteIndex = notes.findIndex((n) => n.id === id);
 
         if (noteIndex === -1) {
-            return NextResponse.json(
-                { error: 'Note not found' },
-                { status: 404 }
-            );
+            const newNote: Note = {
+                id,
+                title: title || 'Untitled Note',
+                description: description !== undefined ? description : '',
+                createdAt: body.createdAt || new Date().toISOString(),
+            };
+            notes.push(newNote);
+            return NextResponse.json(newNote);
         }
 
         notes[noteIndex] = {
@@ -117,10 +121,14 @@ export async function updateTitle(id: string, title: string) {
         const noteIndex = notes.findIndex((n) => n.id === id);
 
         if (noteIndex === -1) {
-            return NextResponse.json(
-                { error: 'Note not found' },
-                { status: 404 }
-            );
+            const newNote: Note = {
+                id,
+                title: title || 'Untitled Note',
+                description: '',
+                createdAt: new Date().toISOString(),
+            };
+            notes.push(newNote);
+            return NextResponse.json(newNote);
         }
 
         notes[noteIndex] = {
