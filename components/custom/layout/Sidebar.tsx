@@ -4,11 +4,23 @@ import { Button } from "@/components/ui/button";
 import useNotesStore from "@/stores/notes.store";
 
 export default function Sidebar() {
-    const { notes, activeNote, setActiveNote } = useNotesStore();
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const { notes, activeNote, setActiveNote, isSidebarOpen, setIsSidebarOpen } = useNotesStore();
 
     return (
-        <aside className="w-64 h-screen border-r border-border bg-zinc-50/50 dark:bg-zinc-900/50 flex flex-col">
+        <>
+            {/* Mobile Overlay */}
+            {isSidebarOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden"
+                    onClick={() => setIsSidebarOpen(false)}
+                />
+            )}
+
+            <aside className={`
+                fixed inset-y-0 left-0 z-50 w-64 bg-zinc-50 dark:bg-zinc-900 border-r border-border flex flex-col transition-transform duration-300 ease-in-out
+                ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+                lg:relative lg:translate-x-0 h-screen
+            `}>
             <div className="p-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <div className="w-6 h-6 bg-black dark:bg-white rounded-md flex items-center justify-center">
@@ -56,5 +68,6 @@ export default function Sidebar() {
                 </Button>
             </div>
         </aside>
+        </>
     )
 }

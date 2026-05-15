@@ -16,6 +16,10 @@ interface NotesState {
     setNotes: (notes: Note[]) => void;
     activeNote: Note | null;
     setActiveNote: (notes:Note) => void;
+    editor: any | null;
+    setEditor: (editor: any) => void;
+    isSidebarOpen: boolean;
+    setIsSidebarOpen: (open: boolean) => void;
 }
 
 const useNotesStore = create<NotesState>((set) => ({
@@ -26,6 +30,10 @@ const useNotesStore = create<NotesState>((set) => ({
     setNotes: (notes: Note[]) => set({ notes }),
     activeNote: null,
     setActiveNote: (note) => set({ activeNote: note }),
+    editor: null,
+    setEditor: (editor) => set({ editor }),
+    isSidebarOpen: false,
+    setIsSidebarOpen: (open) => set({ isSidebarOpen: open }),
 }));
 
 export default useNotesStore;

@@ -2,12 +2,12 @@
 
 import useNotesStore from "@/stores/notes.store"
 import { useState, useEffect } from "react";
-import { CornerUpLeft, CornerUpRight, Sun, Moon } from "lucide-react";
+import { CornerUpLeft, CornerUpRight, Sun, Moon, Menu } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 
 export default function Header() {
-    const { activeNote } = useNotesStore();
+    const { activeNote, isSidebarOpen, setIsSidebarOpen } = useNotesStore();
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 
@@ -22,31 +22,25 @@ export default function Header() {
     }
 
     return (
-        <header className="flex items-center justify-between px-8 py-4 border-b border-border bg-white/50 dark:bg-zinc-950/50 backdrop-blur-md sticky top-0 z-10">
-            <div className="flex flex-col gap-0.5">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Active Note</span>
-                <h1 className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
-                    {activeNote?.title || "Untitled Note"}
-                </h1>
+        <header className="flex items-center justify-between px-4 lg:px-8 py-4 border-b border-border bg-white/50 dark:bg-zinc-950/50 backdrop-blur-md sticky top-0 z-10">
+            <div className="flex items-center gap-4">
+                <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="lg:hidden h-8 w-8 text-zinc-500"
+                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                >
+                    <Menu size={20} />
+                </Button>
+                <div className="flex flex-col gap-0.5">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Active Note</span>
+                    <h1 className="text-sm lg:text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 line-clamp-1">
+                        {activeNote?.title || "Untitled Note"}
+                    </h1>
+                </div>
             </div>
 
             <div className="flex items-center gap-6">
-                <div className="flex items-center gap-3">
-                    {isSaved ? (
-                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            <span className="text-xs font-medium">Saved</span>
-                        </div>
-                    ) : (
-                        <Button 
-                            onClick={handleOnClickSave}
-                            size="sm"
-                            className="bg-amber-500 hover:bg-amber-600 text-white border-none shadow-sm h-8 px-4"
-                        >
-                            Save Changes
-                        </Button>
-                    )}
-                </div>
 
                 <div className="h-6 w-[1px] bg-zinc-200 dark:bg-zinc-800" />
 
