@@ -6,7 +6,7 @@ import CodeBlock from '@tiptap/extension-code-block'
 import Placeholder from '@tiptap/extension-placeholder'
 import FontFamily from '@tiptap/extension-font-family'
 import { useEffect } from 'react'
-
+import Image from '@tiptap/extension-image'
 import { Color } from '@tiptap/extension-color'
 import { TextStyle } from '@tiptap/extension-text-style'
 import { BulletList } from '@tiptap/extension-list'
@@ -25,6 +25,11 @@ const Tiptap = () => {
             TextStyle,
             Underline,
             BulletList,
+            FontFamily,
+            Image.configure({
+                inline: true,
+                allowBase64: true,
+            }),
             Link.configure({
                 openOnClick: false,
             }),
@@ -36,7 +41,6 @@ const Tiptap = () => {
             Placeholder.configure({
                 placeholder: 'start writing...',
             }),
-            FontFamily,
         ],
         content: '<p>Hello World! 🌎️</p>',
         immediatelyRender: false,
