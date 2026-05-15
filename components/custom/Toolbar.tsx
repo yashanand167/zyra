@@ -12,12 +12,12 @@ export default function Toolbar() {
     const states = useEditorState({
         editor: editor!,
         selector: (ctx) => ({
-            isBold: ctx.editor.isActive('bold'),
-            isItalic: ctx.editor.isActive('italic'),
-            isUnderline: ctx.editor.isActive('underline'),
-            isOrderedList: ctx.editor.isActive('orderedList'),
-            isBulletList: ctx.editor.isActive('bulletList'),
-            isCodeBlock: ctx.editor.isActive('codeBlock'),
+            isBold: ctx.editor?.isActive('bold') ?? false,
+            isItalic: ctx.editor?.isActive('italic') ?? false,
+            isUnderline: ctx.editor?.isActive('underline') ?? false,
+            isOrderedList: ctx.editor?.isActive('orderedList') ?? false,
+            isBulletList: ctx.editor?.isActive('bulletList') ?? false,
+            isCodeBlock: ctx.editor?.isActive('codeBlock') ?? false,
         }),
     });
 
@@ -31,7 +31,7 @@ export default function Toolbar() {
             onClick={onClick}
             className={`flex h-9 w-9 items-center justify-center rounded-xl transition-all duration-200 ${
                 isActive 
-                ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-md ring-1 ring-zinc-900/10" 
+                ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 ring-1 ring-zinc-900/10" 
                 : "text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100"
             }`}
             title={label}
@@ -120,7 +120,7 @@ export default function Toolbar() {
                     <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="flex h-9 items-center gap-2 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 text-xs font-semibold text-zinc-600 dark:text-zinc-400 shadow-sm transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                        className="flex h-9 items-center gap-2 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 text-xs font-semibold text-zinc-600 dark:text-zinc-400 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800"
                     >
                         <FileDown size={14} />
                         <span className="hidden lg:inline">Export PDF</span>
@@ -128,7 +128,7 @@ export default function Toolbar() {
                     <motion.button
                         whileHover={{ scale: 1.02, y: -1 }}
                         whileTap={{ scale: 0.98 }}
-                        className="flex h-9 items-center gap-2 rounded-xl bg-zinc-900 px-5 text-xs font-bold text-white shadow-lg shadow-zinc-900/20 transition-all hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:shadow-zinc-100/10 dark:hover:bg-zinc-200"
+                        className="flex h-9 items-center gap-2 rounded-xl bg-zinc-900 px-5 text-xs font-bold text-white transition-all hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
                     >
                         <Save size={14} />
                         <span className="hidden lg:inline">Save Changes</span>

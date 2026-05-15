@@ -24,9 +24,9 @@ export default function Header() {
     return (
         <header className="flex items-center justify-between px-4 lg:px-8 py-4 border-b border-border bg-white/50 dark:bg-zinc-950/50 backdrop-blur-md sticky top-0 z-10">
             <div className="flex items-center gap-4">
-                <Button 
-                    variant="ghost" 
-                    size="icon" 
+                <Button
+                    variant="ghost"
+                    size="icon"
                     className="lg:hidden h-8 w-8 text-zinc-500"
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                 >
@@ -51,7 +51,7 @@ export default function Header() {
                     <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
                         <CornerUpRight size={18} />
                     </Button>
-                    
+
                     <div className="mx-1.5 h-4 w-[1px] bg-zinc-200 dark:bg-zinc-800" />
 
                     <Button

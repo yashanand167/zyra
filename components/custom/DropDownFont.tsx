@@ -29,6 +29,7 @@ export default function DropDownFont({ editor }: Props) {
     const states = useEditorState({
         editor: editor!,
         selector: ctx => {
+            if (!ctx.editor) return {} as Record<string, boolean>;
             return FONTS.reduce((acc, font) => {
                 if (font.value === "") return acc;
                 acc[font.label] = ctx.editor.isActive('textStyle', { fontFamily: font.value });
@@ -60,7 +61,7 @@ export default function DropDownFont({ editor }: Props) {
                     <motion.button
                         whileTap={{ scale: 0.96 }}
                         whileHover={{ scale: 1.02 }}
-                        className="flex items-center gap-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur px-3 py-2 shadow-sm transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-900 min-w-[120px]"
+                        className="flex items-center gap-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur px-3 py-2 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-900 min-w-[120px]"
                     >
                         <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
                             <Type size={14} />
@@ -74,7 +75,7 @@ export default function DropDownFont({ editor }: Props) {
                 
                 <DropdownMenuContent 
                     align="start" 
-                    className="w-64 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-xl p-2 shadow-2xl overflow-hidden"
+                    className="w-64 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-xl p-2 overflow-hidden"
                 >
                     <div className="px-2 py-1.5 text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
                         Font Family
@@ -90,7 +91,7 @@ export default function DropDownFont({ editor }: Props) {
                                 onClick={() => handleFontChange(f.value)}
                                 className={`group flex items-center justify-between px-3 py-2.5 rounded-xl text-sm cursor-pointer transition-all mb-0.5 last:mb-0 ${
                                     isActive 
-                                    ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm" 
+                                    ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100" 
                                     : "text-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100"
                                 }`}
                             >

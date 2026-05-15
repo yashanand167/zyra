@@ -38,7 +38,7 @@ export default function DropDownColor({ editor }: Props) {
     const states = useEditorState({
         editor: editor!,
         selector: ctx => ({
-            currentColor: ctx.editor.getAttributes("textStyle").color,
+            currentColor: ctx.editor?.getAttributes("textStyle").color ?? "",
         }),
     });
 
@@ -58,7 +58,7 @@ export default function DropDownColor({ editor }: Props) {
                 <motion.button
                     whileTap={{ scale: 0.96 }}
                     whileHover={{ scale: 1.05 }}
-                    className="flex items-center gap-2 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur px-3 py-2 shadow-sm transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                    className="flex items-center gap-2 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur px-3 py-2 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-900"
                 >
                     <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
                         <Palette size={14} />
@@ -66,7 +66,7 @@ export default function DropDownColor({ editor }: Props) {
                     
                     <motion.div
                         layout
-                        className="h-4 w-4 rounded-full border border-black/10 dark:border-white/10 shadow-inner"
+                        className="h-4 w-4 rounded-full border border-black/10 dark:border-white/10"
                         style={{
                             backgroundColor: states.currentColor || "#a1a1aa",
                         }}
@@ -76,7 +76,7 @@ export default function DropDownColor({ editor }: Props) {
 
             <DropdownMenuContent
                 align="start"
-                className="w-64 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-xl p-4 shadow-2xl"
+                className="w-64 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-xl p-4"
             >
                 <div className="flex items-center justify-between mb-4 px-1">
                     <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Text Color</span>
@@ -111,7 +111,7 @@ export default function DropDownColor({ editor }: Props) {
                                         animate={{ scale: 1 }}
                                         transition={{ type: "spring", stiffness: 400, damping: 10 }}
                                     >
-                                        <Check size={14} className="text-white drop-shadow-md" />
+                                        <Check size={14} className="text-white" />
                                     </motion.div>
                                 )}
                             </motion.button>
