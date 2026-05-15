@@ -1,8 +1,10 @@
 import { PanelRightOpen, Search, Plus, Settings } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import useNotesStore from "@/stores/notes.store";
 
 export default function Sidebar() {
+    const { notes, activeNote, setActiveNote } = useNotesStore();
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     return (
@@ -35,7 +37,11 @@ export default function Sidebar() {
                     <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">All notes</h2>
                 </div>
                 <div className="space-y-1">
-                    {/* Notes list will go here */}
+                    {notes?.map((note) => (
+                        <Button key={note.id} variant="ghost" onClick={() => setActiveNote(note)} className="w-full justify-start gap-2 h-9 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 px-3">
+                            <span className="text-sm font-medium">{note.title}</span>
+                        </Button>
+                    ))}
                 </div>
             </div>
 

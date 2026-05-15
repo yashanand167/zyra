@@ -3,6 +3,7 @@
 import Header from "@/components/custom/layout/Header";
 import Sidebar from "@/components/custom/layout/Sidebar";
 import Tiptap from "../components/custom/Tiptap";
+import Toolbar from "@/components/custom/Toolbar";
 
 export default function Home() {
 
