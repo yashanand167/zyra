@@ -5,6 +5,8 @@ interface Note {
     title: string;
     description: string;
     createdAt: string;
+    updatedAt: string;
+    authorId: string;
 }
 
 interface NotesState {

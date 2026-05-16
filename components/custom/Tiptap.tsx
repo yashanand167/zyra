@@ -39,10 +39,10 @@ const Tiptap = () => {
                 },
             }),
             Placeholder.configure({
-                placeholder: 'start writing...',
+                placeholder: 'Start writing...',
             }),
         ],
-        content: '<p>Hello World! 🌎️</p>',
+        content: '',
         immediatelyRender: false,
         editorProps: {
             attributes: {
@@ -56,6 +56,14 @@ const Tiptap = () => {
             setEditor(null);
         },
     })
+
+    useEffect(() => {
+        if (editor && activeNote) {
+            if (editor.getHTML() !== activeNote.description) {
+                editor.commands.setContent(activeNote.description);
+            }
+        }
+    }, [activeNote, editor]);
 
     useEffect(() => {
         if (editor) {

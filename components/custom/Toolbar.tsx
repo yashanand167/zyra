@@ -1,4 +1,4 @@
-import { Bold, Italic, Underline, ListOrdered, List, Link, CodeXml, Image, FileDown, Save, Plus } from "lucide-react"
+import { Bold, Italic, Underline, ListOrdered, List, Link, CodeXml, Image, FileDown, Save } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import useNotesStore from "@/stores/notes.store"
 import DropDownColor from "./DropDownColor"
@@ -7,17 +7,28 @@ import { useEditorState } from "@tiptap/react"
 import { motion } from "motion/react"
 
 export default function Toolbar() {
-    const { editor, addNote, setActiveNote } = useNotesStore();
+    const { editor, setActiveNote, activeNote, updateNote } = useNotesStore();
 
-    const handleNewNote = () => {
-        const newNote = {
-            id: Math.random().toString(36).substring(7),
-            title: "Untitled Note",
-            description: "",
-            createdAt: new Date().toISOString()
-        };
-        addNote(newNote);
-        setActiveNote(newNote);
+    const handleSave = async () => {
+        if (!activeNote || !editor) return;
+
+        try {
+            const response = await fetch("/api/notes", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: activeNote.id,
+                    title: activeNote.title,
+                    description: editor.getHTML(),
+                }),
+            });
+            if (response.ok) {
+                const updatedNote = await response.json();
+                updateNote(activeNote.id, updatedNote);
+            }
+        } catch (error) {
+            console.error("Failed to save note:", error);
+        }
     };
 
     const states = useEditorState({
@@ -40,11 +51,10 @@ export default function Toolbar() {
             whileHover={{ scale: 1.05 }}
             onMouseDown={(e) => e.preventDefault()}
             onClick={onClick}
-            className={`flex h-9 w-9 items-center justify-center rounded-xl transition-all duration-200 ${
-                isActive 
-                ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 ring-1 ring-zinc-900/10" 
-                : "text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100"
-            }`}
+            className={`flex h-9 w-9 items-center justify-center rounded-xl transition-all duration-200 ${isActive
+                    ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 ring-1 ring-zinc-900/10"
+                    : "text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100"
+                }`}
             title={label}
         >
             <Icon size={18} />
@@ -56,19 +66,19 @@ export default function Toolbar() {
             <div className="max-w-5xl mx-auto w-full flex items-center gap-2 lg:gap-4 px-4 py-3 min-w-max">
                 {/* Text Formatting */}
                 <div className="flex items-center gap-1 bg-zinc-50/50 dark:bg-zinc-900/50 p-1 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50">
-                    <ToolButton 
+                    <ToolButton
                         onClick={() => editor.chain().focus().toggleBold().run()}
                         isActive={states.isBold}
                         icon={Bold}
                         label="Bold"
                     />
-                    <ToolButton 
+                    <ToolButton
                         onClick={() => editor.chain().focus().toggleItalic().run()}
                         isActive={states.isItalic}
                         icon={Italic}
                         label="Italic"
                     />
-                    <ToolButton 
+                    <ToolButton
                         onClick={() => editor.chain().focus().toggleUnderline().run()}
                         isActive={states.isUnderline}
                         icon={Underline}
@@ -80,13 +90,13 @@ export default function Toolbar() {
 
                 {/* Lists */}
                 <div className="flex items-center gap-1 bg-zinc-50/50 dark:bg-zinc-900/50 p-1 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50">
-                    <ToolButton 
+                    <ToolButton
                         onClick={() => editor.chain().focus().toggleOrderedList().run()}
                         isActive={states.isOrderedList}
                         icon={ListOrdered}
                         label="Ordered List"
                     />
-                    <ToolButton 
+                    <ToolButton
                         onClick={() => editor.chain().focus().toggleBulletList().run()}
                         isActive={states.isBulletList}
                         icon={List}
@@ -98,20 +108,20 @@ export default function Toolbar() {
 
                 {/* Media & Code */}
                 <div className="flex items-center gap-1 bg-zinc-50/50 dark:bg-zinc-900/50 p-1 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50">
-                    <ToolButton 
-                        onClick={() => {}}
+                    <ToolButton
+                        onClick={() => { }}
                         isActive={false}
                         icon={Link}
                         label="Insert Link"
                     />
-                    <ToolButton 
+                    <ToolButton
                         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
                         isActive={states.isCodeBlock}
                         icon={CodeXml}
                         label="Code Block"
                     />
-                    <ToolButton 
-                        onClick={() => {}}
+                    <ToolButton
+                        onClick={() => { }}
                         isActive={false}
                         icon={Image}
                         label="Insert Image"
@@ -131,17 +141,6 @@ export default function Toolbar() {
                     <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        onClick={handleNewNote}
-                        className="flex h-9 items-center gap-2 rounded-xl bg-zinc-900 px-5 text-xs font-bold text-white transition-all hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
-                    >
-                        <Plus size={14} />
-                        <span className="hidden lg:inline">New Note</span>
-                    </motion.button>
-
-                    <div className="h-4 w-[1px] bg-zinc-200 dark:bg-zinc-800 mx-1" />
-                    <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
                         className="flex h-9 items-center gap-2 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 text-xs font-semibold text-zinc-600 dark:text-zinc-400 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800"
                     >
                         <FileDown size={14} />
@@ -150,6 +149,7 @@ export default function Toolbar() {
                     <motion.button
                         whileHover={{ scale: 1.02, y: -1 }}
                         whileTap={{ scale: 0.98 }}
+                        onClick={handleSave}
                         className="flex h-9 items-center gap-2 rounded-xl bg-zinc-900 px-5 text-xs font-bold text-white transition-all hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
                     >
                         <Save size={14} />

@@ -2,16 +2,33 @@
 
 import useNotesStore from "@/stores/notes.store"
 import { useState, useEffect } from "react";
-import { CornerUpLeft, CornerUpRight, Sun, Moon, Menu } from "lucide-react";
+import { CornerUpLeft, CornerUpRight, Sun, Moon, Menu, Plus } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 
 export default function Header() {
-    const { activeNote, isSidebarOpen, setIsSidebarOpen } = useNotesStore();
+    const { activeNote, isSidebarOpen, setIsSidebarOpen, addNote, setActiveNote } = useNotesStore();
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 
     const [isSaved, setIsSaving] = useState(false);
+
+    const handleNewNote = async () => {
+        try {
+            const response = await fetch("/api/notes", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title: "Untitled Note", description: "" }),
+            });
+            if (response.ok) {
+                const newNote = await response.json();
+                addNote(newNote);
+                setActiveNote(newNote);
+            }
+        } catch (error) {
+            console.error("Failed to create note:", error);
+        }
+    };
 
     useEffect(() => {
         setMounted(true);
@@ -41,6 +58,13 @@ export default function Header() {
             </div>
 
             <div className="flex items-center gap-6">
+                <Button 
+                    onClick={handleNewNote}
+                    className="h-8 px-2 lg:px-4 gap-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 dark:text-zinc-900 text-white text-xs font-bold transition-all active:scale-95 shadow-lg shadow-zinc-900/10"
+                >
+                    <Plus size={14} />
+                    <span className="hidden lg:inline">New Note</span>
+                </Button>
 
                 <div className="h-6 w-[1px] bg-zinc-200 dark:bg-zinc-800" />
 
