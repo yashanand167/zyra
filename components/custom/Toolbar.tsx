@@ -1,4 +1,4 @@
-import { Bold, Italic, Underline, ListOrdered, List, Link, CodeXml, Image, FileDown, Save } from "lucide-react"
+import { Bold, Italic, Underline, ListOrdered, List, Link, CodeXml, Image, FileDown, Save, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import useNotesStore from "@/stores/notes.store"
 import DropDownColor from "./DropDownColor"
@@ -7,7 +7,18 @@ import { useEditorState } from "@tiptap/react"
 import { motion } from "motion/react"
 
 export default function Toolbar() {
-    const { editor } = useNotesStore();
+    const { editor, addNote, setActiveNote } = useNotesStore();
+
+    const handleNewNote = () => {
+        const newNote = {
+            id: Math.random().toString(36).substring(7),
+            title: "Untitled Note",
+            description: "",
+            createdAt: new Date().toISOString()
+        };
+        addNote(newNote);
+        setActiveNote(newNote);
+    };
 
     const states = useEditorState({
         editor: editor!,
@@ -117,6 +128,17 @@ export default function Toolbar() {
 
                 {/* Actions */}
                 <div className="ml-auto flex items-center gap-2">
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={handleNewNote}
+                        className="flex h-9 items-center gap-2 rounded-xl bg-zinc-900 px-5 text-xs font-bold text-white transition-all hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+                    >
+                        <Plus size={14} />
+                        <span className="hidden lg:inline">New Note</span>
+                    </motion.button>
+
+                    <div className="h-4 w-[1px] bg-zinc-200 dark:bg-zinc-800 mx-1" />
                     <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}

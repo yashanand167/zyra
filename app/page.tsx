@@ -7,8 +7,21 @@ import { ArrowRight, Sun, Moon, Twitter, Github, Mail, Globe } from "lucide-reac
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+  const { data: session } = authClient.useSession();
+
+  const handleGetStarted = () => {
+    if (session) {
+      router.push("/dashboard");
+    } else {
+      router.push("/register");
+    }
+  };
+
   return (
     <div className="relative min-h-screen bg-white dark:bg-zinc-950 transition-colors duration-500">
       <Header />
@@ -51,7 +64,7 @@ export default function Home() {
                 transition={{ delay: 0.3, duration: 0.8 }}
                 className="text-2xl sm:text-4xl lg:text-6xl font-medium tracking-tight text-zinc-400 dark:text-zinc-500 leading-tight mt-2"
               >
-                Notes that elevate your thinking.
+                Notes that elevate your thinking
               </motion.p>
               <motion.p
                 initial={{ opacity: 0 }}
@@ -70,12 +83,14 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.8 }}
           >
-            <Link href="/dashboard">
-              <Button size="lg" className="group h-14 px-20 rounded-2xl text-xl gap-3 bg-zinc-900 hover:bg-black dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 transition-all active:scale-[0.98] shadow-2xl shadow-zinc-900/20 dark:shadow-zinc-100/10 font-medium">
-                Start Writing
-                <ArrowRight size={22} className="transition-transform group-hover:translate-x-1" />
-              </Button>
-            </Link>
+            <Button 
+                size="lg" 
+                onClick={handleGetStarted}
+                className="group h-14 px-20 rounded-2xl text-xl gap-3 bg-zinc-900 hover:bg-black dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 transition-all active:scale-[0.98] shadow-2xl shadow-zinc-900/20 dark:shadow-zinc-100/10 font-medium"
+            >
+              Start Writing
+              <ArrowRight size={22} className="transition-transform group-hover:translate-x-1" />
+            </Button>
           </motion.div>
 
           {/* App Mockup Preview */}
@@ -108,10 +123,20 @@ export default function Home() {
 const Header = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+  const { data: session } = authClient.useSession();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleGetStarted = () => {
+    if (session) {
+      router.push("/dashboard");
+    } else {
+      router.push("/register");
+    }
+  };
 
   return (
     <motion.nav
@@ -122,8 +147,10 @@ const Header = () => {
     >
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-3 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl shadow-xl shadow-black/5">
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-zinc-900 dark:bg-zinc-100 flex items-center justify-center text-white dark:text-zinc-900 font-bold italic">z</div>
-          <h1 className="text-xl font-bold tracking-tighter text-zinc-900 dark:text-zinc-100 italic">zyra</h1>
+          <Link href="/" className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-lg bg-zinc-900 dark:bg-zinc-100 flex items-center justify-center text-white dark:text-zinc-900 font-bold italic">z</div>
+            <h1 className="text-xl font-bold tracking-tighter text-zinc-900 dark:text-zinc-100 italic">zyra</h1>
+          </Link>
         </div>
         <div className="flex items-center gap-2 md:gap-4">
           <Button
@@ -138,16 +165,20 @@ const Header = () => {
 
           <div className="h-4 w-[1px] bg-zinc-200 dark:bg-zinc-800" />
 
-          <Link href="/login">
-            <Button variant="ghost" className="h-10 px-4 rounded-xl text-sm font-semibold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
-              Login
-            </Button>
-          </Link>
-          <Link href="/register">
-            <Button className="h-10 px-6 rounded-xl text-sm font-bold bg-zinc-900 hover:bg-black dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 transition-all active:scale-95 shadow-lg shadow-zinc-900/10">
-              Get Started
-            </Button>
-          </Link>
+          {!session && (
+            <Link href="/login">
+                <Button variant="ghost" className="h-10 px-4 rounded-xl text-sm font-semibold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
+                Login
+                </Button>
+            </Link>
+          )}
+          
+          <Button 
+            onClick={handleGetStarted}
+            className="h-10 px-6 rounded-xl text-sm font-bold bg-zinc-900 hover:bg-black dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 transition-all active:scale-95 shadow-lg shadow-zinc-900/10"
+          >
+            {session ? "Dashboard" : "Get Started"}
+          </Button>
         </div>
       </div>
     </motion.nav>
